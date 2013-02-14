@@ -13,7 +13,7 @@
 ##
 
 NGINX_JAIL=/home/nginx
-INSTALL_FILES=/home/installer/install_files
+INSTALL_FILES=/home/arley/Dropbox/proyectos/nethub/produccion/nginx-chroot/install_files
 
 
 echo "Creating chroot jail for nginx..."
@@ -71,16 +71,16 @@ cp -avr /etc/{ld.so.conf.d,prelink.conf.d} ${NGINX_JAIL}/etc
 # If using SSL, /usr/lib/ssl and /usr/lib/ssl/* will also need to be added to jail
 
 echo "Copying nginx.conf to nginx jail to run as nginx user..."
-mv /home/installer/install_files/nginx.conf ${NGINX_JAIL}/etc/nginx
+mv ${INSTALL_FILES}/nginx.conf ${NGINX_JAIL}/etc/nginx
 chmod 644 ${NGINX_JAIL}/etc/nginx/nginx.conf
 
-chown nginx:nginx /home/nginx/home/nginx
+chown nginx:nginx ${NGINX_JAIL}
 
 echo "Killing nginx..."
 killall -9 nginx
 echo "Starting chrooted nginx..."
-/usr/sbin/chroot /home/nginx /usr/sbin/nginx -t
-/usr/sbin/chroot /home/nginx /usr/sbin/nginx
+/usr/sbin/chroot ${NGINX_JAIL} /usr/sbin/nginx -t
+/usr/sbin/chroot ${NGINX_JAIL} /usr/sbin/nginx
 
 echo "Adding chrooted nginx to startup in /etc/rc.local..."
 echo '/usr/sbin/chroot ${NGINX_JAIL} /usr/sbin/nginx' >> /etc/rc.local
